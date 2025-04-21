@@ -38,11 +38,82 @@ with tab_dash:
             resp = requests.post(PRED_ENDPOINT, json={"data": js}).json()
             st.metric("Beklenen Fatura (TL)", resp["expected_cost"])
 
+# -----------------------------------------------------------
+# PDF UPLOAD TAB – Breaker başına dinamik cihaz yönetimi
+# -----------------------------------------------------------
 with tab_upload:
     st.header("Makine PDF Yükle")
-    pdf_file = st.file_uploader("Teknik dökümanı seç", type=["pdf"])
-    if pdf_file:
-        st.success(f"Yüklendi: {pdf_file.name} (örnek embed işlemi burada yapılacak)")
+
+    # --- Session state ---
+    if "devices" not in st.session_state:
+        st.session_state.devices = []
+    if "device_counter" not in st.session_state:
+        st.session_state.device_counter = 0
+    if "breakers" not in st.session_state:
+        st.session_state.breakers = ["BRK‑1"]        # başlangıç listesi
+
+    # --- Breaker dropdown ---
+    breakers_with_new = st.session_state.breakers + ["➕ Yeni Breaker…"]
+    selection = st.selectbox("Breaker ID seç", breakers_with_new, key="sel_breaker")
+
+    # Yeni breaker eklemek istenirse
+    if selection == "➕ Yeni Breaker…":
+        new_brk = st.text_input("Yeni Breaker ID girin")
+        if st.button("Ekle"):
+            if new_brk and new_brk not in st.session_state.breakers:
+                st.session_state.breakers.append(new_brk)
+                st.success(f"'{new_brk}' eklendi.")
+                st.experimental_rerun()
+        st.stop()   # ekleme işlemi tamamlanana kadar aşağıdaki kodu çalıştırma
+
+    breaker_id = selection   # bundan sonra seçili breaker’la devam
+
+    st.divider()
+
+    # 1️⃣ Seçili breaker’daki mevcut cihazlar
+    existing = [d for d in st.session_state.devices if d["breaker_id"] == breaker_id]
+    for dev in existing:
+        cols = st.columns([1, 2, 3, 2, 1])  # label | ad | PDF | prompt | sil
+        cols[0].markdown(f"**Cihaz {dev['Cihaz_id']}**")
+
+        dev["cihaz_adi"] = cols[1].text_input(
+            "Cihaz adı", value=dev.get("cihaz_adi", ""),
+            key=f"name_{dev['Cihaz_id']}"
+        )
+
+        pdf_file = cols[2].file_uploader(
+            "Teknik PDF", type=["pdf"],
+            key=f"pdf_{dev['Cihaz_id']}"
+        )
+        if pdf_file:
+            dev["cihaz_pdf"] = pdf_file.name
+            dev["file_obj"] = pdf_file
+
+        dev["kullanıcı_promptu"] = cols[3].text_input(
+            "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
+            key=f"prompt_{dev['Cihaz_id']}"
+        )
+
+        if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
+            st.session_state.devices.remove(dev)
+            st.experimental_rerun()
+
+    # 2️⃣ Yeni cihaz ekle
+    if st.button("➕ Yeni Cihaz Ekle"):
+        new_id = st.session_state.device_counter
+        st.session_state.device_counter += 1
+        st.session_state.devices.append({
+            "Cihaz_id": new_id,
+            "cihaz_pdf": "null",
+            "breaker_id": breaker_id,
+            "kullanıcı_promptu": "",
+        })
+        st.experimental_rerun()
+
+    # 3️⃣ JSON ön‑izleme (geliştirici aracı)
+    with st.expander("📄 JSON Çıktısını Gör"):
+        st.json(st.session_state.devices)
+
 
 with tab_chat:
     st.header("Enerji Chatbot")
