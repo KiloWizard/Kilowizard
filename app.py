@@ -72,31 +72,39 @@ with tab_upload:
 
     # 1️⃣ Seçili breaker’daki mevcut cihazlar
     existing = [d for d in st.session_state.devices if d["breaker_id"] == breaker_id]
+    # 1️⃣ Seçili breaker’daki mevcut cihazlar – KUTU GÖRÜNÜMÜ
     for dev in existing:
-        cols = st.columns([1, 2, 3, 2, 1])  # label | ad | PDF | prompt | sil
-        cols[0].markdown(f"**Cihaz {dev['Cihaz_id']}**")
+        # ❖ Her cihaz bir "expander" = kenarlıklı kutu
+        with st.expander(f"🗂️ Cihaz {dev['Cihaz_id']}", expanded=True):
+            cols = st.columns([2, 3, 3, 3, 1])  # label | ad | PDF | prompt | sil
 
-        dev["cihaz_adi"] = cols[1].text_input(
-            "Cihaz adı", value=dev.get("cihaz_adi", ""),
-            key=f"name_{dev['Cihaz_id']}"
-        )
+            cols[0].markdown("**Ayarlar**")  # boş bırakmak yerine başlık ekledik
 
-        pdf_file = cols[2].file_uploader(
-            "Teknik PDF", type=["pdf"],
-            key=f"pdf_{dev['Cihaz_id']}"
-        )
-        if pdf_file:
-            dev["cihaz_pdf"] = pdf_file.name
-            dev["file_obj"] = pdf_file
+            # Cihaz adı
+            dev["cihaz_adi"] = cols[1].text_input(
+                "Cihaz adı", value=dev.get("cihaz_adi", ""),
+                key=f"name_{dev['Cihaz_id']}"
+            )
 
-        dev["kullanıcı_promptu"] = cols[3].text_input(
-            "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
-            key=f"prompt_{dev['Cihaz_id']}"
-        )
+            # PDF yükleyici
+            pdf_file = cols[2].file_uploader(
+                "Teknik PDF", type=["pdf"],
+                key=f"pdf_{dev['Cihaz_id']}"
+            )
+            if pdf_file:
+                dev["cihaz_pdf"] = pdf_file.name
+                dev["file_obj"] = pdf_file
 
-        if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
-            st.session_state.devices.remove(dev)
-            st.experimental_rerun()
+            # Kullanıcı promptu
+            dev["kullanıcı_promptu"] = cols[3].text_input(
+                "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
+                key=f"prompt_{dev['Cihaz_id']}"
+            )
+
+            # Silme butonu
+            if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
+                st.session_state.devices.remove(dev)
+                st.experimental_rerun()
 
     # 2️⃣ Yeni cihaz ekle
     if st.button("➕ Yeni Cihaz Ekle"):
