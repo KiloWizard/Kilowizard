@@ -93,17 +93,16 @@ with tab_upload:
                 key=f"prompt_{dev['Cihaz_id']}"
             )
 
-            # 💾 Kaydet butonu
-            if cols[4].button("💾", key=f"save_{dev['Cihaz_id']}"):
-                dev["cihaz_adi"] = tmp_name
-                dev["kullanıcı_promptu"] = tmp_prompt
-                st.success(f"Cihaz {dev['Cihaz_id']} güncellendi.")
-                st.experimental_rerun()
+            with cols[4]:
+                if st.button("💾 Kaydet", key=f"save_{dev['Cihaz_id']}"):
+                    dev["cihaz_adi"] = tmp_name
+                    dev["kullanıcı_promptu"] = tmp_prompt
+                    st.success(f"Cihaz {dev['Cihaz_id']} güncellendi.")
+                    st.experimental_rerun()
 
-            # Silme butonu
-            if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
-                st.session_state.devices.remove(dev)
-                st.experimental_rerun()
+                if st.button("🗑️ Sil", key=f"del_{dev['Cihaz_id']}"):
+                    st.session_state.devices.remove(dev)
+                    st.experimental_rerun()
 
     if st.button("➕ Yeni Cihaz Ekle"):
         new_id = st.session_state.device_counter
@@ -118,6 +117,7 @@ with tab_upload:
 
     with st.expander("📄 JSON Çıktısını Gör"):
         st.json(st.session_state.devices)
+
 
 with tab_chat:
     st.header("Enerji Chatbot")
