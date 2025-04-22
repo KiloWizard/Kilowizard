@@ -82,7 +82,7 @@ with tab_upload:
         exp_title = f"📂 {dev.get('cihaz_adi', '').strip() or f'Cihaz {dev['Cihaz_id']}'}"
         with st.expander(exp_title, expanded=True):
             cols = st.columns([2, 3, 3, 3, 1])
-            cols[0].markdown("**Ayarlar**")
+            cols[0].markdown("**Ayarlar**") 
 
             tmp_name = cols[1].text_input(
                 "Cihaz adı", value=dev.get("cihaz_adi", ""),
