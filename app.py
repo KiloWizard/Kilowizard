@@ -6,7 +6,6 @@ st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
 PRED_ENDPOINT = "http://localhost:8002/predict"
 
-
 st.sidebar.title("Breaker ➞ Makine Eşleme")
 st.sidebar.text("Sürükle‑bırak diyagram ileride gelecek…")
 
@@ -44,19 +43,16 @@ with tab_dash:
 with tab_upload:
     st.header("Makine PDF Yükle")
 
-    # --- Session state ---
     if "devices" not in st.session_state:
         st.session_state.devices = []
     if "device_counter" not in st.session_state:
         st.session_state.device_counter = 0
     if "breakers" not in st.session_state:
-        st.session_state.breakers = ["BRK‑1"]        # başlangıç listesi
+        st.session_state.breakers = ["BRK‑1"]
 
-    # --- Breaker dropdown ---
     breakers_with_new = st.session_state.breakers + ["➕ Yeni Breaker…"]
     selection = st.selectbox("Breaker ID seç", breakers_with_new, key="sel_breaker")
 
-    # Yeni breaker eklemek istenirse
     if selection == "➕ Yeni Breaker…":
         new_brk = st.text_input("Yeni Breaker ID girin")
         if st.button("Ekle"):
@@ -64,29 +60,26 @@ with tab_upload:
                 st.session_state.breakers.append(new_brk)
                 st.success(f"'{new_brk}' eklendi.")
                 st.experimental_rerun()
-        st.stop()   # ekleme işlemi tamamlanana kadar aşağıdaki kodu çalıştırma
+        st.stop()
 
-    breaker_id = selection   # bundan sonra seçili breaker’la devam
+    breaker_id = selection
 
     st.divider()
 
-    # 1️⃣ Seçili breaker’daki mevcut cihazlar
     existing = [d for d in st.session_state.devices if d["breaker_id"] == breaker_id]
-    # 1️⃣ Seçili breaker’daki mevcut cihazlar – KUTU GÖRÜNÜMÜ
     for dev in existing:
-        # ❖ Her cihaz bir "expander" = kenarlıklı kutu
-        with st.expander(f"🗂 Cihaz {dev['Cihaz_id']}", expanded=True):
-            cols = st.columns([2, 3, 3, 3, 1])  # label | ad | PDF | prompt | sil
+        # 👇 Cihaz adı varsa başlıkta göster
+        exp_title = f"🗂️ {dev.get('cihaz_adi', '').strip() or f'Cihaz {dev['Cihaz_id']}'}"
+        with st.expander(exp_title, expanded=True):
+            cols = st.columns([2, 3, 3, 3, 1])
+            cols[0].markdown("**Ayarlar**")
 
-            cols[0].markdown("*Ayarlar*")  # boş bırakmak yerine başlık ekledik
-
-            # Cihaz adı
-            dev["cihaz_adi"] = cols[1].text_input(
+            # Geçici olarak alınan değerleri ayrı sakla
+            tmp_name = cols[1].text_input(
                 "Cihaz adı", value=dev.get("cihaz_adi", ""),
                 key=f"name_{dev['Cihaz_id']}"
             )
 
-            # PDF yükleyici
             pdf_file = cols[2].file_uploader(
                 "Teknik PDF", type=["pdf"],
                 key=f"pdf_{dev['Cihaz_id']}"
@@ -95,18 +88,23 @@ with tab_upload:
                 dev["cihaz_pdf"] = pdf_file.name
                 dev["file_obj"] = pdf_file
 
-            # Kullanıcı promptu
-            dev["kullanıcı_promptu"] = cols[3].text_input(
+            tmp_prompt = cols[3].text_input(
                 "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
                 key=f"prompt_{dev['Cihaz_id']}"
             )
 
+            # 💾 Kaydet butonu
+            if cols[4].button("💾", key=f"save_{dev['Cihaz_id']}"):
+                dev["cihaz_adi"] = tmp_name
+                dev["kullanıcı_promptu"] = tmp_prompt
+                st.success(f"Cihaz {dev['Cihaz_id']} güncellendi.")
+                st.experimental_rerun()
+
             # Silme butonu
-            if cols[4].button("🗑", key=f"del_{dev['Cihaz_id']}"):
+            if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
                 st.session_state.devices.remove(dev)
                 st.experimental_rerun()
 
-    # 2️⃣ Yeni cihaz ekle
     if st.button("➕ Yeni Cihaz Ekle"):
         new_id = st.session_state.device_counter
         st.session_state.device_counter += 1
@@ -118,10 +116,8 @@ with tab_upload:
         })
         st.experimental_rerun()
 
-    # 3️⃣ JSON ön‑izleme (geliştirici aracı)
     with st.expander("📄 JSON Çıktısını Gör"):
         st.json(st.session_state.devices)
-
 
 with tab_chat:
     st.header("Enerji Chatbot")
@@ -131,9 +127,9 @@ with tab_chat:
         st.chat_message(m["role"]).markdown(m["content"])
     if prompt := st.chat_input("Sorunuzu yazın…"):
         st.chat_message("user").markdown(prompt)
-        st.session_state.messages.append({"role":"user","content":prompt})
-        # ----- LLM çağrısı -----
+        st.session_state.messages.append({"role": "user", "content": prompt})
         from llm.agent import agent
         answer = agent.invoke({"input": prompt})
         st.chat_message("assistant").markdown(answer["output"])
-        st.session_state.messages.append({"role":"assistant","content":answer["output"]})
+        st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
+
