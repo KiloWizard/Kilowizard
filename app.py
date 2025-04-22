@@ -75,38 +75,34 @@ with tab_upload:
     # 1️⃣ Seçili breaker’daki mevcut cihazlar – KUTU GÖRÜNÜMÜ
     for dev in existing:
         # ❖ Her cihaz bir "expander" = kenarlıklı kutu
-        with st.expander(f"🗂️ Cihaz {dev['Cihaz_id']}", expanded=True):
+        with st.expander(f"🗂 Cihaz {dev['Cihaz_id']}", expanded=True):
             cols = st.columns([2, 3, 3, 3, 1])  # label | ad | PDF | prompt | sil
 
-            cols[0].markdown("**Ayarlar**")  # boş bırakmak yerine başlık ekledik
+            cols[0].markdown("*Ayarlar*")  # boş bırakmak yerine başlık ekledik
 
-            # Geçici olarak alınan değerleri ayrı sakla
-tmp_name = cols[1].text_input(
-    "Cihaz adı", value=dev.get("cihaz_adi", ""),
-    key=f"name_{dev['Cihaz_id']}"
-)
+            # Cihaz adı
+            dev["cihaz_adi"] = cols[1].text_input(
+                "Cihaz adı", value=dev.get("cihaz_adi", ""),
+                key=f"name_{dev['Cihaz_id']}"
+            )
 
-pdf_file = cols[2].file_uploader(
-    "Teknik PDF", type=["pdf"],
-    key=f"pdf_{dev['Cihaz_id']}"
-)
-if pdf_file:
-    dev["cihaz_pdf"] = pdf_file.name
-    dev["file_obj"] = pdf_file
+            # PDF yükleyici
+            pdf_file = cols[2].file_uploader(
+                "Teknik PDF", type=["pdf"],
+                key=f"pdf_{dev['Cihaz_id']}"
+            )
+            if pdf_file:
+                dev["cihaz_pdf"] = pdf_file.name
+                dev["file_obj"] = pdf_file
 
-tmp_prompt = cols[3].text_input(
-    "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
-    key=f"prompt_{dev['Cihaz_id']}"
-)
-
-# 💾 Kaydet butonu (isim ve prompt için)
-if cols[4].button("💾", key=f"save_{dev['Cihaz_id']}"):
-    dev["cihaz_adi"] = tmp_name
-    dev["kullanıcı_promptu"] = tmp_prompt
-    st.success(f"Cihaz {dev['Cihaz_id']} güncellendi.")
+            # Kullanıcı promptu
+            dev["kullanıcı_promptu"] = cols[3].text_input(
+                "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
+                key=f"prompt_{dev['Cihaz_id']}"
+            )
 
             # Silme butonu
-            if cols[4].button("🗑️", key=f"del_{dev['Cihaz_id']}"):
+            if cols[4].button("🗑", key=f"del_{dev['Cihaz_id']}"):
                 st.session_state.devices.remove(dev)
                 st.experimental_rerun()
 
