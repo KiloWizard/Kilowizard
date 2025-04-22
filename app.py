@@ -6,7 +6,7 @@ st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
 PRED_ENDPOINT = "http://localhost:8002/predict"
 
-# ----- Sidebar -----
+
 st.sidebar.title("Breaker ➞ Makine Eşleme")
 st.sidebar.text("Sürükle‑bırak diyagram ileride gelecek…")
 
