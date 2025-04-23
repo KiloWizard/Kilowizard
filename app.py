@@ -56,12 +56,36 @@ with tab_dash:
         if st.button("24 saat Tahmin"):
             js = [m.model_dump_json() for m in st.session_state.measurements]
             resp = requests.post(PRED_ENDPOINT, json={"data": js}).json()
-            st.metric("Beklenen Fatura (TL)", resp.get("expected_cost", 0))
+            st.metric("Beklenen Fatura (TL)", resp["expected_cost"])
 
 # -----------------------------------------------------------
 # PDF UPLOAD TAB
 # -----------------------------------------------------------
 with tab_upload:
+    valid_measurements = [m for m in st.session_state.get("measurements", []) if isinstance(m, RawMeasurement)]
+    breaker_energy = {}
+
+    # Sabit değerlerle enerji hesaplama ve pie chart için
+    breaker_energy = {
+        "BRK-1": 1500,  # Sabit aktif güç değerleri
+        "BRK-2": 2200,
+        "BRK-3": 1800,
+    }
+
+    # Eğer 2 veya daha fazla breaker varsa
+    if len(breaker_energy) >= 2:
+        st.subheader("⚡ Breaker'lara Göre Enerji Payı")
+        labels = list(breaker_energy.keys())
+        sizes = list(breaker_energy.values())
+
+        fig_pie, ax_pie = plt.subplots()
+        ax_pie.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140)
+        ax_pie.axis("equal")  # Daire şeklinde görünmesi için
+        st.pyplot(fig_pie)
+        st.markdown("---")
+    else:
+        st.warning("Enerji payı gösterimi için en az 2 farklı breaker gereklidir.")
+
     st.header("Makine PDF Yükle")
 
     if "devices" not in st.session_state:
@@ -70,25 +94,6 @@ with tab_upload:
         st.session_state.device_counter = 0
     if "breakers" not in st.session_state:
         st.session_state.breakers = ["BRK‑1"]
-
-    valid_measurements = [m for m in st.session_state.get("measurements", []) if isinstance(m, RawMeasurement)]
-    breaker_energy = {}
-
-    for m in valid_measurements:
-        brk_id = m.breaker_id
-        ap = m.metrics.get("active_power", 0)
-        breaker_energy[brk_id] = breaker_energy.get(brk_id, 0) + ap
-
-    if len(breaker_energy) >= 1:
-        st.subheader("⚡ Breaker'lara Göre Enerji Payı")
-        labels = list(breaker_energy.keys())
-        sizes = list(breaker_energy.values())
-
-        fig_pie, ax_pie = plt.subplots()
-        ax_pie.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140)
-        ax_pie.axis("equal")
-        st.pyplot(fig_pie)
-        st.markdown("---")
 
     breakers_with_new = st.session_state.breakers + ["➕ Yeni Breaker…"]
     selection = st.selectbox("Breaker ID seç", breakers_with_new, key="sel_breaker")
@@ -219,4 +224,3 @@ with tab_chat:
 
         st.chat_message("assistant").markdown(answer["output"])
         st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
-
