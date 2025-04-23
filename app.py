@@ -6,6 +6,7 @@ from utils.schemas import RawMeasurement
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.dates as mdates
 
 st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
@@ -22,23 +23,31 @@ tab_dash, tab_upload, tab_chat = st.tabs(["📊 Dashboard", "📂 PDF Upload", "
 # -----------------------------------------------------------
 with tab_dash:
     st.header("Canlı Ölçümler")
+
     if "measurements" not in st.session_state:
         st.session_state.measurements = []
 
     col1, col2 = st.columns(2)
+
     with col1:
         breaker_id = st.text_input("Breaker ID", value="BRK-12-A1")
         current = st.number_input("Akım (A)", value=30.0)
         voltage = st.number_input("Gerilim (V)", value=400.0)
+
         if st.button("Gönder"):
             measurement = RawMeasurement(
-                timestamp=datetime.utcnow(), breaker_id=breaker_id,
+                timestamp=datetime.utcnow(),
+                breaker_id=breaker_id,
                 metrics={
-                    "current": current, "voltage": voltage,
+                    "current": current,
+                    "voltage": voltage,
                     "active_power": current * voltage / 1000,
-                    "reactive_power": 0, "apparent_power": 0,
-                    "power_factor": 0.9, "energy": 0,
-                    "leakage_current": 0, "temperature": 25
+                    "reactive_power": 0,
+                    "apparent_power": 0,
+                    "power_factor": 0.9,
+                    "energy": 0,
+                    "leakage_current": 0,
+                    "temperature": 25
                 }
             )
             st.session_state.measurements.append(measurement)
@@ -53,6 +62,25 @@ with tab_dash:
 # PDF UPLOAD TAB
 # -----------------------------------------------------------
 with tab_upload:
+    valid_measurements = [m for m in st.session_state.get("measurements", []) if isinstance(m, RawMeasurement)]
+    breaker_energy = {}
+
+    for m in valid_measurements:
+        brk_id = m.breaker_id
+        ap = m.metrics.get("active_power", 0)
+        breaker_energy[brk_id] = breaker_energy.get(brk_id, 0) + ap
+
+    if len(breaker_energy) >= 2:
+        st.subheader("⚡ Breaker'lara Göre Enerji Payı")
+        labels = list(breaker_energy.keys())
+        sizes = list(breaker_energy.values())
+
+        fig_pie, ax_pie = plt.subplots()
+        ax_pie.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140)
+        ax_pie.axis("equal")
+        st.pyplot(fig_pie)
+        st.markdown("---")
+
     st.header("Makine PDF Yükle")
 
     if "devices" not in st.session_state:
@@ -85,23 +113,14 @@ with tab_upload:
             cols = st.columns([2, 3, 3, 3, 1])
             cols[0].markdown("**Ayarlar**")
 
-            tmp_name = cols[1].text_input(
-                "Cihaz adı", value=dev.get("cihaz_adi", ""),
-                key=f"name_{dev['Cihaz_id']}"
-            )
+            tmp_name = cols[1].text_input("Cihaz adı", value=dev.get("cihaz_adi", ""), key=f"name_{dev['Cihaz_id']}")
 
-            pdf_file = cols[2].file_uploader(
-                "Teknik PDF", type=["pdf"],
-                key=f"pdf_{dev['Cihaz_id']}"
-            )
+            pdf_file = cols[2].file_uploader("Teknik PDF", type=["pdf"], key=f"pdf_{dev['Cihaz_id']}")
             if pdf_file:
                 dev["cihaz_pdf"] = pdf_file.name
                 dev["file_obj"] = pdf_file
 
-            tmp_prompt = cols[3].text_input(
-                "Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""),
-                key=f"prompt_{dev['Cihaz_id']}"
-            )
+            tmp_prompt = cols[3].text_input("Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""), key=f"prompt_{dev['Cihaz_id']}")
 
             with cols[4]:
                 if st.button("💾 Kaydet", key=f"save_{dev['Cihaz_id']}"):
@@ -139,10 +158,7 @@ with tab_upload:
         zamanlar = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi)][::-1]
         degerler = np.random.uniform(10, 100, size=saat_sayisi)
 
-        if zaman_araligi == "Son 7 Gün":
-            zamanlar = zamanlar[::8]
-            degerler = degerler[::8]
-        elif zaman_araligi == "Son 30 Gün":
+        if zaman_araligi != "Son 24 Saat":
             zamanlar = zamanlar[::8]
             degerler = degerler[::8]
 
@@ -152,19 +168,14 @@ with tab_upload:
         ax.set_xlabel("Zaman", fontsize=12)
         ax.set_ylabel(grafik_tipi, fontsize=12)
         ax.grid(True)
-
-        import matplotlib.dates as mdates
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b\n%H:%M'))
         fig.autofmt_xdate()
-
         st.pyplot(fig)
         st.markdown("---")
 
     st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
 
-    alternatif_grafik_tipi = st.radio(
-        "Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True
-    )
+    alternatif_grafik_tipi = st.radio("Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
 
     if st.button("🖼️ Opsiyon B Grafiğini Göster"):
         saat_sayisi_b = 48
@@ -192,14 +203,19 @@ with tab_upload:
 # -----------------------------------------------------------
 with tab_chat:
     st.header("Enerji Chatbot")
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
+
     for m in st.session_state.messages:
         st.chat_message(m["role"]).markdown(m["content"])
+
     if prompt := st.chat_input("Sorunuzu yazın…"):
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
+
         from llm.agent import agent
         answer = agent.invoke({"input": prompt})
+
         st.chat_message("assistant").markdown(answer["output"])
         st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
