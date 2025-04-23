@@ -135,19 +135,35 @@ with tab_upload:
     zaman_araligi = st.selectbox("Zaman Aralığı", ["Son 24 Saat", "Son 7 Gün", "Son 30 Gün"])
 
     if st.button("📊 Grafiği Göster"):
-        saat_sayisi = {"Son 24 Saat": 24, "Son 7 Gün": 7 * 24, "Son 30 Gün": 30 * 24}[zaman_araligi]
-        zamanlar = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi)][::-1]
-        degerler = np.random.uniform(10, 100, size=saat_sayisi)
+    saat_sayisi = {"Son 24 Saat": 24, "Son 7 Gün": 7 * 24, "Son 30 Gün": 30 * 24}[zaman_araligi]
+    zamanlar = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi)][::-1]
+    degerler = np.random.uniform(10, 100, size=saat_sayisi)
 
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(zamanlar, degerler, marker="o", linestyle="-")
-        ax.set_title(f"{grafik_tipi} - {grafik_breaker} ({zaman_araligi})")
-        ax.set_xlabel("Zaman")
-        ax.set_ylabel(grafik_tipi)
-        ax.grid(True)
-        fig.autofmt_xdate()
-        st.pyplot(fig)
-        st.markdown("---")  # Ayraç çizgisi
+    # Her zaman aralığı için gösterilecek nokta sayısını kontrol et
+    if zaman_araligi == "Son 7 Gün":
+        zamanlar = zamanlar[::8]  # her 8 saatte bir, 21 nokta
+        degerler = degerler[::8]
+    elif zaman_araligi == "Son 30 Gün":
+        zamanlar = zamanlar[::8]  # her 8 saatte bir, 90 nokta
+        degerler = degerler[::8]
+    # Son 24 Saat zaten 24 nokta, değişmiyor
+
+    # Grafik çizimi
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(zamanlar, degerler, marker="o", linestyle="-")
+    ax.set_title(f"{grafik_tipi} - {grafik_breaker} ({zaman_araligi})", fontsize=14)
+    ax.set_xlabel("Zaman", fontsize=12)
+    ax.set_ylabel(grafik_tipi, fontsize=12)
+    ax.grid(True)
+
+    # Zaman ekseni okunaklı formatta
+    import matplotlib.dates as mdates
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b\n%H:%M'))
+    fig.autofmt_xdate()
+
+    st.pyplot(fig)
+    st.markdown("---")
+
 
     st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
 
