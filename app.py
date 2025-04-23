@@ -162,25 +162,36 @@ with tab_upload:
     fig.autofmt_xdate()
 
     st.pyplot(fig)
-    st.markdown("---")
+   st.markdown("---")  # Ayraç çizgisi
 
+st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
 
-    st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
+alternatif_grafik_tipi = st.radio(
+    "Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True
+)
 
-    alternatif_grafik_tipi = st.radio("Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
-    if st.button("🖼️ Opsiyon B Grafiğini Göster"):
-        saat_sayisi_b = 48
-        zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
-        degerler_b = np.random.uniform(0, 1, size=saat_sayisi_b)
+if st.button("🖼️ Opsiyon B Grafiğini Göster"):
+    saat_sayisi_b = 48
+    zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
 
-        fig_b, ax_b = plt.subplots(figsize=(10, 4))
-        ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
-        ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
-        ax_b.set_xlabel("Zaman")
-        ax_b.set_ylabel(alternatif_grafik_tipi)
-        ax_b.grid(True)
-        fig_b.autofmt_xdate()
-        st.pyplot(fig_b)
+    # Alternatif verileri dict ile üret
+    alternatif_veriler = {
+        "Sıcaklık": np.random.uniform(15, 35, size=saat_sayisi_b),
+        "Güç Faktörü": np.random.uniform(0.7, 1.0, size=saat_sayisi_b),
+        "Kaçak Akım": np.random.uniform(0, 0.03, size=saat_sayisi_b),
+    }
+
+    degerler_b = alternatif_veriler[alternatif_grafik_tipi]
+
+    fig_b, ax_b = plt.subplots(figsize=(10, 4))
+    ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
+    ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
+    ax_b.set_xlabel("Zaman")
+    ax_b.set_ylabel(alternatif_grafik_tipi)
+    ax_b.grid(True)
+    fig_b.autofmt_xdate()
+    st.pyplot(fig_b)
+
 
 
 # -----------------------------------------------------------
