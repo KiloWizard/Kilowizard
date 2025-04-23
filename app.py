@@ -83,7 +83,7 @@ with tab_upload:
         exp_title = f"📂 {dev.get('cihaz_adi', '').strip() or f'Cihaz {dev['Cihaz_id']}'}"
         with st.expander(exp_title, expanded=True):
             cols = st.columns([2, 3, 3, 3, 1])
-            cols[0].markdown("**Ayarlar**") 
+            cols[0].markdown("**Ayarlar**")
 
             tmp_name = cols[1].text_input(
                 "Cihaz adı", value=dev.get("cihaz_adi", ""),
@@ -135,64 +135,57 @@ with tab_upload:
     zaman_araligi = st.selectbox("Zaman Aralığı", ["Son 24 Saat", "Son 7 Gün", "Son 30 Gün"])
 
     if st.button("📊 Grafiği Göster"):
-    saat_sayisi = {"Son 24 Saat": 24, "Son 7 Gün": 7 * 24, "Son 30 Gün": 30 * 24}[zaman_araligi]
-    zamanlar = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi)][::-1]
-    degerler = np.random.uniform(10, 100, size=saat_sayisi)
+        saat_sayisi = {"Son 24 Saat": 24, "Son 7 Gün": 7 * 24, "Son 30 Gün": 30 * 24}[zaman_araligi]
+        zamanlar = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi)][::-1]
+        degerler = np.random.uniform(10, 100, size=saat_sayisi)
 
-    # Her zaman aralığı için gösterilecek nokta sayısını kontrol et
-    if zaman_araligi == "Son 7 Gün":
-        zamanlar = zamanlar[::8]  # her 8 saatte bir, 21 nokta
-        degerler = degerler[::8]
-    elif zaman_araligi == "Son 30 Gün":
-        zamanlar = zamanlar[::8]  # her 8 saatte bir, 90 nokta
-        degerler = degerler[::8]
-    # Son 24 Saat zaten 24 nokta, değişmiyor
+        if zaman_araligi == "Son 7 Gün":
+            zamanlar = zamanlar[::8]
+            degerler = degerler[::8]
+        elif zaman_araligi == "Son 30 Gün":
+            zamanlar = zamanlar[::8]
+            degerler = degerler[::8]
 
-    # Grafik çizimi
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(zamanlar, degerler, marker="o", linestyle="-")
-    ax.set_title(f"{grafik_tipi} - {grafik_breaker} ({zaman_araligi})", fontsize=14)
-    ax.set_xlabel("Zaman", fontsize=12)
-    ax.set_ylabel(grafik_tipi, fontsize=12)
-    ax.grid(True)
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(zamanlar, degerler, marker="o", linestyle="-")
+        ax.set_title(f"{grafik_tipi} - {grafik_breaker} ({zaman_araligi})", fontsize=14)
+        ax.set_xlabel("Zaman", fontsize=12)
+        ax.set_ylabel(grafik_tipi, fontsize=12)
+        ax.grid(True)
 
-    # Zaman ekseni okunaklı formatta
-    import matplotlib.dates as mdates
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b\n%H:%M'))
-    fig.autofmt_xdate()
+        import matplotlib.dates as mdates
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b\n%H:%M'))
+        fig.autofmt_xdate()
 
-    st.pyplot(fig)
-   st.markdown("---")  # Ayraç çizgisi
+        st.pyplot(fig)
+        st.markdown("---")
 
-st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
+    st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
 
-alternatif_grafik_tipi = st.radio(
-    "Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True
-)
+    alternatif_grafik_tipi = st.radio(
+        "Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True
+    )
 
-if st.button("🖼️ Opsiyon B Grafiğini Göster"):
-    saat_sayisi_b = 48
-    zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
+    if st.button("🖼️ Opsiyon B Grafiğini Göster"):
+        saat_sayisi_b = 48
+        zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
 
-    # Alternatif verileri dict ile üret
-    alternatif_veriler = {
-        "Sıcaklık": np.random.uniform(15, 35, size=saat_sayisi_b),
-        "Güç Faktörü": np.random.uniform(0.7, 1.0, size=saat_sayisi_b),
-        "Kaçak Akım": np.random.uniform(0, 0.03, size=saat_sayisi_b),
-    }
+        alternatif_veriler = {
+            "Sıcaklık": np.random.uniform(15, 35, size=saat_sayisi_b),
+            "Güç Faktörü": np.random.uniform(0.7, 1.0, size=saat_sayisi_b),
+            "Kaçak Akım": np.random.uniform(0, 0.03, size=saat_sayisi_b),
+        }
 
-    degerler_b = alternatif_veriler[alternatif_grafik_tipi]
+        degerler_b = alternatif_veriler[alternatif_grafik_tipi]
 
-    fig_b, ax_b = plt.subplots(figsize=(10, 4))
-    ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
-    ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
-    ax_b.set_xlabel("Zaman")
-    ax_b.set_ylabel(alternatif_grafik_tipi)
-    ax_b.grid(True)
-    fig_b.autofmt_xdate()
-    st.pyplot(fig_b)
-
-
+        fig_b, ax_b = plt.subplots(figsize=(10, 4))
+        ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
+        ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
+        ax_b.set_xlabel("Zaman")
+        ax_b.set_ylabel(alternatif_grafik_tipi)
+        ax_b.grid(True)
+        fig_b.autofmt_xdate()
+        st.pyplot(fig_b)
 
 # -----------------------------------------------------------
 # CHATBOT TAB
