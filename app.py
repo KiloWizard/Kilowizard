@@ -86,7 +86,7 @@ with tab_upload:
     else:
         st.warning("Enerji payı gösterimi için en az 2 farklı breaker gereklidir.")
 
-    st.header("Makine PDF Yükle")
+    st.header("Breaker ekle")
 
     if "devices" not in st.session_state:
         st.session_state.devices = []
@@ -178,11 +178,11 @@ with tab_upload:
         st.pyplot(fig)
         st.markdown("---")
 
-    st.subheader("🧪 Opsiyon B: Alternatif Grafik Gösterimi")
+    st.subheader("Anlık Grafik Takibi")
 
-    alternatif_grafik_tipi = st.radio("Alternatif Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
+    alternatif_grafik_tipi = st.radio("Anlık Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
 
-    if st.button("🖼️ Opsiyon B Grafiğini Göster"):
+    if st.button("Grafiği Göster"):
         saat_sayisi_b = 48
         zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
 
