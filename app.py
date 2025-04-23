@@ -78,7 +78,7 @@ with tab_upload:
         labels = list(breaker_energy.keys())
         sizes = list(breaker_energy.values())
 
-        fig_pie, ax_pie = plt.subplots()
+        fig_pie, ax_pie = plt.subplots(figsize=(6, 6))  # Boyut küçültüldü
         ax_pie.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140)
         ax_pie.axis("equal")  # Daire şeklinde görünmesi için
         st.pyplot(fig_pie)
