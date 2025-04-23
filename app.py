@@ -56,12 +56,21 @@ with tab_dash:
         if st.button("24 saat Tahmin"):
             js = [m.model_dump_json() for m in st.session_state.measurements]
             resp = requests.post(PRED_ENDPOINT, json={"data": js}).json()
-            st.metric("Beklenen Fatura (TL)", resp["expected_cost"])
+            st.metric("Beklenen Fatura (TL)", resp.get("expected_cost", 0))
 
 # -----------------------------------------------------------
 # PDF UPLOAD TAB
 # -----------------------------------------------------------
 with tab_upload:
+    st.header("Makine PDF Yükle")
+
+    if "devices" not in st.session_state:
+        st.session_state.devices = []
+    if "device_counter" not in st.session_state:
+        st.session_state.device_counter = 0
+    if "breakers" not in st.session_state:
+        st.session_state.breakers = ["BRK‑1"]
+
     valid_measurements = [m for m in st.session_state.get("measurements", []) if isinstance(m, RawMeasurement)]
     breaker_energy = {}
 
@@ -70,7 +79,7 @@ with tab_upload:
         ap = m.metrics.get("active_power", 0)
         breaker_energy[brk_id] = breaker_energy.get(brk_id, 0) + ap
 
-    if len(breaker_energy) >= 2:
+    if len(breaker_energy) >= 1:
         st.subheader("⚡ Breaker'lara Göre Enerji Payı")
         labels = list(breaker_energy.keys())
         sizes = list(breaker_energy.values())
@@ -80,15 +89,6 @@ with tab_upload:
         ax_pie.axis("equal")
         st.pyplot(fig_pie)
         st.markdown("---")
-
-    st.header("Makine PDF Yükle")
-
-    if "devices" not in st.session_state:
-        st.session_state.devices = []
-    if "device_counter" not in st.session_state:
-        st.session_state.device_counter = 0
-    if "breakers" not in st.session_state:
-        st.session_state.breakers = ["BRK‑1"]
 
     breakers_with_new = st.session_state.breakers + ["➕ Yeni Breaker…"]
     selection = st.selectbox("Breaker ID seç", breakers_with_new, key="sel_breaker")
@@ -219,3 +219,4 @@ with tab_chat:
 
         st.chat_message("assistant").markdown(answer["output"])
         st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
+
