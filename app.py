@@ -76,6 +76,7 @@ with tab_upload:
 
     breaker_id = selection
     st.divider()
+    st.subheader(f"🔌 '{breaker_id}' için Tanımlı Cihazlar")
 
     existing = [d for d in st.session_state.devices if d["breaker_id"] == breaker_id]
     for dev in existing:
