@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
+import plotly.express as px
+
 
 st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
@@ -41,11 +43,11 @@ with tab_dash:
                 metrics={
                     "current": current,
                     "voltage": voltage,
-                    "active_power": current * voltage / 1000,
+                    "active_power": current * voltage / 1000,  # kW
+                    "energy": (current * voltage / 1000) * 1,  # 1 saat varsayımıyla kWh
                     "reactive_power": 0,
                     "apparent_power": 0,
                     "power_factor": 0.9,
-                    "energy": 0,
                     "leakage_current": 0,
                     "temperature": 25
                 }
@@ -62,31 +64,32 @@ with tab_dash:
 # PDF UPLOAD TAB
 # -----------------------------------------------------------
 with tab_upload:
-    valid_measurements = [m for m in st.session_state.get("measurements", []) if isinstance(m, RawMeasurement)]
+    valid_measurements = [
+        m for m in st.session_state.get("measurements", [])
+        if isinstance(m, RawMeasurement)
+    ]
+    
     breaker_energy = {}
+    for m in valid_measurements:
+        brk = m.breaker_id
+        energy = m.metrics.get("energy", 0)
+        breaker_energy[brk] = breaker_energy.get(brk, 0) + energy
 
-    # Sabit değerlerle enerji hesaplama ve pie chart için
-    breaker_energy = {
-        "BRK-1": 1500,  # Sabit aktif güç değerleri
-        "BRK-2": 2200,
-        "BRK-3": 1800,
-    }
-
-    # Eğer 2 veya daha fazla breaker varsa
+    st.subheader("⚡ Breaker'lara Göre Enerji Payı")
+    
     if len(breaker_energy) >= 2:
-        st.subheader("⚡ Breaker'lara Göre Enerji Payı")
-        labels = list(breaker_energy.keys())
-        sizes = list(breaker_energy.values())
-
-        fig_pie, ax_pie = plt.subplots(figsize=(6, 6))  # Boyut küçültüldü
-        ax_pie.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=140)
-        ax_pie.axis("equal")  # Daire şeklinde görünmesi için
-        st.pyplot(fig_pie)
+        pie_fig = px.pie(
+            names=list(breaker_energy.keys()),
+            values=list(breaker_energy.values()),
+            title="Breaker Enerji Dağılımı (kWh)",
+        )
+        pie_fig.update_traces(textinfo="percent+label")
+        st.plotly_chart(pie_fig, use_container_width=True)
         st.markdown("---")
     else:
         st.warning("Enerji payı gösterimi için en az 2 farklı breaker gereklidir.")
 
-    st.header("Breaker ekle")
+    st.header("🧁Breaker ekle ")
 
     if "devices" not in st.session_state:
         st.session_state.devices = []
@@ -113,7 +116,8 @@ with tab_upload:
 
     existing = [d for d in st.session_state.devices if d["breaker_id"] == breaker_id]
     for dev in existing:
-        exp_title = f"📂 {dev.get('cihaz_adi', '').strip() or f'Cihaz {dev['Cihaz_id']}'}"
+        cihaz_adi = dev.get("cihaz_adi", "").strip()
+        exp_title = f"📂 {cihaz_adi if cihaz_adi else 'Cihaz ' + str(dev['Cihaz_id'])}"
         with st.expander(exp_title, expanded=True):
             cols = st.columns([2, 3, 3, 3, 1])
             cols[0].markdown("**Ayarlar**")
