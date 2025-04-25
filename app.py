@@ -10,6 +10,17 @@ import matplotlib.dates as mdates
 import plotly.express as px
 import random
 
+import fitz
+from llm.agent import invoke
+
+#pdf reader
+def read_pdf_text(uploaded_file):
+    text = ""
+    with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
+        for page in doc:
+            text += page.get_text()
+    return text.strip()
+
 st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
 PRED_ENDPOINT = "http://localhost:8002/predict"
@@ -148,9 +159,20 @@ with tab_upload:
             tmp_name = cols[1].text_input("Cihaz adı", value=dev.get("cihaz_adi", ""), key=f"name_{dev['Cihaz_id']}")
 
             pdf_file = cols[2].file_uploader("Teknik PDF", type=["pdf"], key=f"pdf_{dev['Cihaz_id']}")
-            if pdf_file:
-                dev["cihaz_pdf"] = pdf_file.name
-                dev["file_obj"] = pdf_file
+            if pdf_file is not None:
+                try:
+                    dev["cihaz_pdf"] = pdf_file.name
+                    dev["file_obj"] = pdf_file
+
+                    #  Dosya içeriğini oku ve yazdır
+                    pdf_text = read_pdf_text(pdf_file)
+                    dev["pdf_text"] = pdf_text
+
+                    st.success("PDF başarıyla okundu.")
+                    st.code(pdf_text[:1000])
+
+                except Exception as e:
+                    st.error(f"PDF okunurken hata oluştu: {e}")
 
             tmp_prompt = cols[3].text_input("Kullanıcı promptu", value=dev.get("kullanıcı_promptu", ""), key=f"prompt_{dev['Cihaz_id']}")
 
@@ -246,8 +268,7 @@ with tab_chat:
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        from llm.agent import agent
-        answer = agent.invoke({"input": prompt})
-
+#LLM cağrısı
+        answer = invoke({"input": prompt, "devices": st.session_state.devices})
         st.chat_message("assistant").markdown(answer["output"])
         st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
