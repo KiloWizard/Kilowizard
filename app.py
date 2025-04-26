@@ -123,7 +123,7 @@ with tab_upload:
     else:
         st.warning("Enerji payı gösterimi için en az 2 farklı breaker gereklidir.")
 
-    st.header("🧁Breaker ekle ")
+    st.header("Breaker ekle ")
 
     if "devices" not in st.session_state:
         st.session_state.devices = []
