@@ -229,28 +229,31 @@ with tab_upload:
 
     st.subheader("Anlık Grafik Takibi")
 
-    alternatif_grafik_tipi = st.radio("Anlık Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
+alternatif_grafik_tipi = st.radio("Anlık Grafik Türü", ["Sıcaklık", "Güç Faktörü", "Kaçak Akım"], horizontal=True)
 
-    if st.button("Grafiği Göster"):
-        saat_sayisi_b = 48
-        zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
+if st.button("Grafiği Göster"):
+    saat_sayisi_b = 48
+    zamanlar_b = [datetime.now() - timedelta(hours=i) for i in range(saat_sayisi_b)][::-1]
 
-        alternatif_veriler = {
-            "Sıcaklık": np.random.uniform(15, 35, size=saat_sayisi_b),
-            "Güç Faktörü": np.random.uniform(0.7, 1.0, size=saat_sayisi_b),
-            "Kaçak Akım": np.random.uniform(0, 0.03, size=saat_sayisi_b),
-        }
+    # Sabit değerler (örnek olarak belirledim, istersen kullanıcıdan alınabilir)
+    sabit_degerler = {
+        "Sıcaklık": 25.0,
+        "Güç Faktörü": 0.95,
+        "Kaçak Akım": 0.01,
+    }
 
-        degerler_b = alternatif_veriler[alternatif_grafik_tipi]
+    sabit_deger = sabit_degerler[alternatif_grafik_tipi]
+    degerler_b = [sabit_deger] * saat_sayisi_b  # 48 adet aynı değeri içeren liste
 
-        fig_b, ax_b = plt.subplots(figsize=(10, 4))
-        ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
-        ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
-        ax_b.set_xlabel("Zaman")
-        ax_b.set_ylabel(alternatif_grafik_tipi)
-        ax_b.grid(True)
-        fig_b.autofmt_xdate()
-        st.pyplot(fig_b)
+    fig_b, ax_b = plt.subplots(figsize=(10, 4))
+    ax_b.plot(zamanlar_b, degerler_b, color="orange", marker="x", linestyle="--")
+    ax_b.set_title(f"{alternatif_grafik_tipi} - {grafik_breaker} (Son 48 Saat)")
+    ax_b.set_xlabel("Zaman")
+    ax_b.set_ylabel(alternatif_grafik_tipi)
+    ax_b.grid(True)
+    fig_b.autofmt_xdate()
+    st.pyplot(fig_b)
+
 
 # -----------------------------------------------------------
 # CHATBOT TAB
