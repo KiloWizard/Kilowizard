@@ -1,0 +1,542 @@
+[
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-01T00:00:00",
+    "voltage": 233.6,
+    "current": 14.9,
+    "active_power": 3.44,
+    "energy": 4.38,
+    "leakage_current": 0.15
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-01T00:00:00",
+    "voltage": 226.3,
+    "current": 10.4,
+    "active_power": 2.19,
+    "energy": 2.22,
+    "leakage_current": 0.005
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-02T00:00:00",
+    "voltage": 230.2,
+    "current": 12.4,
+    "active_power": 3.39,
+    "energy": 4.28,
+    "leakage_current": 0.027
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-02T00:00:00",
+    "voltage": 231.5,
+    "current": 11.2,
+    "active_power": 2.46,
+    "energy": 2.93,
+    "leakage_current": 0.015
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-03T00:00:00",
+    "voltage": 227.8,
+    "current": 10.8,
+    "active_power": 3.33,
+    "energy": 4.29,
+    "leakage_current": 0.008
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-03T00:00:00",
+    "voltage": 227.4,
+    "current": 12.2,
+    "active_power": 2.29,
+    "energy": 2.81,
+    "leakage_current": 0.026
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-04T00:00:00",
+    "voltage": 225.8,
+    "current": 12.7,
+    "active_power": 3.35,
+    "energy": 4.12,
+    "leakage_current": 0.017
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-04T00:00:00",
+    "voltage": 234.5,
+    "current": 12.5,
+    "active_power": 2.35,
+    "energy": 2.86,
+    "leakage_current": 0.019
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-05T00:00:00",
+    "voltage": 232.1,
+    "current": 14.1,
+    "active_power": 3.3,
+    "energy": 4.2,
+    "leakage_current": 0.028
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-05T00:00:00",
+    "voltage": 229.3,
+    "current": 10.1,
+    "active_power": 2.12,
+    "energy": 2.55,
+    "leakage_current": 0.02
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-06T00:00:00",
+    "voltage": 230.5,
+    "current": 13.3,
+    "active_power": 3.37,
+    "energy": 4.05,
+    "leakage_current": 0.009
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-06T00:00:00",
+    "voltage": 233.0,
+    "current": 12.6,
+    "active_power": 2.65,
+    "energy": 3.16,
+    "leakage_current": 0.026
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-07T00:00:00",
+    "voltage": 231.7,
+    "current": 13.7,
+    "active_power": 3.44,
+    "energy": 3.92,
+    "leakage_current": 0.15
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-07T00:00:00",
+    "voltage": 226.0,
+    "current": 14.9,
+    "active_power": 3.19,
+    "energy": 3.84,
+    "leakage_current": 0.025
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-08T00:00:00",
+    "voltage": 229.9,
+    "current": 13.6,
+    "active_power": 3.09,
+    "energy": 3.75,
+    "leakage_current": 0.018
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-08T00:00:00",
+    "voltage": 232.8,
+    "current": 12.9,
+    "active_power": 3.44,
+    "energy": 3.57,
+    "leakage_current": 0.023
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-09T00:00:00",
+    "voltage": 230.3,
+    "current": 12.2,
+    "active_power": 2.87,
+    "energy": 3.52,
+    "leakage_current": 0.028
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-09T00:00:00",
+    "voltage": 228.2,
+    "current": 12.2,
+    "active_power": 3.24,
+    "energy": 3.78,
+    "leakage_current": 0.012
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-10T00:00:00",
+    "voltage": 231.2,
+    "current": 14.8,
+    "active_power": 2.41,
+    "energy": 3.03,
+    "leakage_current": 0.014
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-10T00:00:00",
+    "voltage": 231.7,
+    "current": 11.3,
+    "active_power": 3.12,
+    "energy": 3.17,
+    "leakage_current": 0.009
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-11T00:00:00",
+    "voltage": 234.2,
+    "current": 13.3,
+    "active_power": 3.42,
+    "energy": 3.76,
+    "leakage_current": 0.029
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-11T00:00:00",
+    "voltage": 227.5,
+    "current": 13.5,
+    "active_power": 2.89,
+    "energy": 3.44,
+    "leakage_current": 0.025
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-12T00:00:00",
+    "voltage": 229.1,
+    "current": 13.0,
+    "active_power": 2.92,
+    "energy": 3.59,
+    "leakage_current": 0.017
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-12T00:00:00",
+    "voltage": 232.2,
+    "current": 12.1,
+    "active_power": 2.98,
+    "energy": 3.79,
+    "leakage_current": 0.02
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-13T00:00:00",
+    "voltage": 225.1,
+    "current": 13.4,
+    "active_power": 2.38,
+    "energy": 3.08,
+    "leakage_current": 0.021
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-13T00:00:00",
+    "voltage": 226.8,
+    "current": 14.6,
+    "active_power": 3.42,
+    "energy": 3.68,
+    "leakage_current": 0.22
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-14T00:00:00",
+    "voltage": 234.7,
+    "current": 10.4,
+    "active_power": 3.33,
+    "energy": 4.15,
+    "leakage_current": 0.029
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-14T00:00:00",
+    "voltage": 232.5,
+    "current": 13.7,
+    "active_power": 2.42,
+    "energy": 2.57,
+    "leakage_current": 0.028
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-15T00:00:00",
+    "voltage": 232.1,
+    "current": 11.1,
+    "active_power": 2.19,
+    "energy": 2.44,
+    "leakage_current": 0.02
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-15T00:00:00",
+    "voltage": 234.2,
+    "current": 10.8,
+    "active_power": 2.43,
+    "energy": 2.8,
+    "leakage_current": 0.029
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-16T00:00:00",
+    "voltage": 231.7,
+    "current": 12.6,
+    "active_power": 2.45,
+    "energy": 3.01,
+    "leakage_current": 0.01
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-16T00:00:00",
+    "voltage": 231.0,
+    "current": 13.6,
+    "active_power": 3.21,
+    "energy": 3.4,
+    "leakage_current": 0.03
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-17T00:00:00",
+    "voltage": 225.4,
+    "current": 13.4,
+    "active_power": 2.93,
+    "energy": 3.53,
+    "leakage_current": 0.018
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-17T00:00:00",
+    "voltage": 231.0,
+    "current": 11.3,
+    "active_power": 2.52,
+    "energy": 3.1,
+    "leakage_current": 0.026
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-18T00:00:00",
+    "voltage": 233.5,
+    "current": 14.3,
+    "active_power": 3.13,
+    "energy": 3.38,
+    "leakage_current": 0.029
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-18T00:00:00",
+    "voltage": 232.5,
+    "current": 10.8,
+    "active_power": 3.32,
+    "energy": 3.7,
+    "leakage_current": 0.016
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-19T00:00:00",
+    "voltage": 225.8,
+    "current": 13.8,
+    "active_power": 2.78,
+    "energy": 3.11,
+    "leakage_current": 0.026
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-19T00:00:00",
+    "voltage": 225.7,
+    "current": 13.1,
+    "active_power": 3.03,
+    "energy": 3.04,
+    "leakage_current": 0.027
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-20T00:00:00",
+    "voltage": 226.1,
+    "current": 13.3,
+    "active_power": 2.3,
+    "energy": 2.47,
+    "leakage_current": 0.007
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-20T00:00:00",
+    "voltage": 230.6,
+    "current": 10.7,
+    "active_power": 2.18,
+    "energy": 2.45,
+    "leakage_current": 0.019
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-21T00:00:00",
+    "voltage": 231.2,
+    "current": 11.5,
+    "active_power": 2.63,
+    "energy": 3.05,
+    "leakage_current": 0.026
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-21T00:00:00",
+    "voltage": 230.8,
+    "current": 13.9,
+    "active_power": 2.69,
+    "energy": 2.69,
+    "leakage_current": 0.021
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-22T00:00:00",
+    "voltage": 232.0,
+    "current": 14.5,
+    "active_power": 3.25,
+    "energy": 3.83,
+    "leakage_current": 0.014
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-22T00:00:00",
+    "voltage": 226.4,
+    "current": 10.4,
+    "active_power": 3.23,
+    "energy": 3.52,
+    "leakage_current": 0.009
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-23T00:00:00",
+    "voltage": 227.0,
+    "current": 14.9,
+    "active_power": 3.08,
+    "energy": 3.61,
+    "leakage_current": 0.011
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-23T00:00:00",
+    "voltage": 233.2,
+    "current": 11.0,
+    "active_power": 3.36,
+    "energy": 3.76,
+    "leakage_current": 0.2
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-24T00:00:00",
+    "voltage": 229.8,
+    "current": 12.5,
+    "active_power": 2.51,
+    "energy": 2.75,
+    "leakage_current": 0.009
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-24T00:00:00",
+    "voltage": 235.0,
+    "current": 11.5,
+    "active_power": 2.52,
+    "energy": 3.27,
+    "leakage_current": 0.017
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-25T00:00:00",
+    "voltage": 225.3,
+    "current": 12.4,
+    "active_power": 2.77,
+    "energy": 3.1,
+    "leakage_current": 0.006
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-25T00:00:00",
+    "voltage": 227.5,
+    "current": 11.2,
+    "active_power": 2.73,
+    "energy": 3.06,
+    "leakage_current": 0.017
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-26T00:00:00",
+    "voltage": 226.9,
+    "current": 12.3,
+    "active_power": 2.12,
+    "energy": 2.69,
+    "leakage_current": 0.021
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-26T00:00:00",
+    "voltage": 228.5,
+    "current": 13.2,
+    "active_power": 3.16,
+    "energy": 4.1,
+    "leakage_current": 0.021
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-27T00:00:00",
+    "voltage": 234.0,
+    "current": 10.7,
+    "active_power": 2.26,
+    "energy": 2.61,
+    "leakage_current": 0.008
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-27T00:00:00",
+    "voltage": 228.6,
+    "current": 13.2,
+    "active_power": 2.68,
+    "energy": 2.8,
+    "leakage_current": 0.014
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-28T00:00:00",
+    "voltage": 226.1,
+    "current": 12.0,
+    "active_power": 2.11,
+    "energy": 2.42,
+    "leakage_current": 0.007
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-28T00:00:00",
+    "voltage": 226.3,
+    "current": 13.3,
+    "active_power": 2.28,
+    "energy": 2.53,
+    "leakage_current": 0.01
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-29T00:00:00",
+    "voltage": 230.0,
+    "current": 12.9,
+    "active_power": 3.05,
+    "energy": 3.87,
+    "leakage_current": 0.023
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-29T00:00:00",
+    "voltage": 229.5,
+    "current": 14.5,
+    "active_power": 2.21,
+    "energy": 2.59,
+    "leakage_current": 0.013
+  },
+  {
+    "breaker_id": "CB-01",
+    "timestamp": "2025-04-30T00:00:00",
+    "voltage": 227.3,
+    "current": 13.1,
+    "active_power": 2.79,
+    "energy": 3.04,
+    "leakage_current": 0.03
+  },
+  {
+    "breaker_id": "CB-02",
+    "timestamp": "2025-04-30T00:00:00",
+    "voltage": 226.6,
+    "current": 14.4,
+    "active_power": 3.25,
+    "energy": 3.51,
+    "leakage_current": 0.022
+  }
+]
