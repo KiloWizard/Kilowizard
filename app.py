@@ -160,8 +160,7 @@ with tab_upload:
                     dev["file_obj"] = pdf_file
                     pdf_text = read_pdf_text(pdf_file)
                     dev["pdf_text"] = pdf_text
-                    st.success("PDF başarıyla okundu.")
-                    st.code(pdf_text[:1000])
+                    
                 except Exception as e:
                     st.error(f"PDF okunurken hata oluştu: {e}")
 
@@ -189,8 +188,7 @@ with tab_upload:
         })
         st.experimental_rerun()
 
-    with st.expander("📄 JSON Çıktısını Gör"):
-        st.json(st.session_state.devices)
+
 
     st.subheader("📈 Grafik Oluştur")
     grafik_breaker = st.selectbox("Grafik için Breaker ID seç", st.session_state.breakers, key="plot_brk")
