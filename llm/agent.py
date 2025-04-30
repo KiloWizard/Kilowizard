@@ -1,7 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain.agents import initialize_agent, Tool
 from langchain_community.tools import DuckDuckGoSearchRun
-from ml.predict import predict_last_24h
 from utils.schemas import RawMeasurement
 import json, os
 import re
