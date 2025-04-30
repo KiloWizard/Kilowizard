@@ -102,7 +102,7 @@ with tab_upload:
     breaker_energy = {}
     for m in valid_measurements:
         brk = m.breaker_id
-        energy = m.metrics.get("energy", 0)
+        energy = getattr(m.metrics, "energy", 0)
         breaker_energy[brk] = breaker_energy.get(brk, 0) + energy
 
     st.subheader("⚡ Breaker'lara Göre Enerji Payı")
@@ -201,7 +201,7 @@ with tab_upload:
         metric_key = {"Aktif Güç": "active_power", "Akım": "current", "Gerilim": "voltage"}[grafik_tipi]
         measurements = [m for m in st.session_state.measurements if m.breaker_id == grafik_breaker]
         zamanlar = [m.timestamp for m in measurements]
-        degerler = [m.metrics.get(metric_key, 0) for m in measurements]
+        degerler = [m.metrics.dict().get(metric_key, 0) for m in measurements]
 
         fig, ax = plt.subplots(figsize=(10, 4))
         ax.plot(zamanlar, degerler, marker="o", linestyle="-")
@@ -223,11 +223,11 @@ with tab_upload:
         zamanlar_b = [m.timestamp for m in measurements]
 
         if alternatif_grafik_tipi == "Sıcaklık":
-            degerler_b = [m.metrics.get("temperature", 25) for m in measurements]
+            degerler_b = [getattr(m.metrics, "temperature", 25) for m in measurements]
         elif alternatif_grafik_tipi == "Güç Faktörü":
-            degerler_b = [m.metrics.get("power_factor", 0.9) for m in measurements]
+            degerler_b = [getattr(m.metrics, "power_factor", 0.9) for m in measurements]
         elif alternatif_grafik_tipi == "Kaçak Akım":
-            degerler_b = [m.metrics.get("leakage_current", 0) for m in measurements]
+            degerler_b = [getattr(m.metrics, "leakage_current", 0) for m in measurements]
         else:
             degerler_b = [0 for _ in measurements]
 
