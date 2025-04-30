@@ -32,7 +32,7 @@ st.sidebar.text("Sürükle‑bırak diyagram ileride gelecek…")
 if "measurements" not in st.session_state:
     st.session_state.measurements = []
 
-    with open("/mnt/data/sample.json", "r") as f:
+    with open(r"C:\Users\sozcu\Desktop\sample.json", "r") as f:
         data = json.load(f)
 
     for item in data:
