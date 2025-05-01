@@ -1,10 +1,11 @@
 from langchain_openai import ChatOpenAI
 from ml.predict import predict_energy
+from ml.predict import  fault_detection
+from ml.predict import leakage_anomaly_detection
 import re
 import json
 
 
-OPENAI_API_KEY=""
 llm = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0.2,
@@ -16,6 +17,8 @@ def build_prompt(data: dict) -> str:
     user_question = data.get("input", "")
     devices = data.get("devices", [])
     predict_result = data.get("predict_result", {})
+    faults = data.get("faults", {})
+    leakage_result = data.get("leakage_result", {})
 
     prompt_parts = [
         "Sen bir enerji verimliliği danışmanısın. Kullanıcıya aşağıdaki verilere göre yanıt ver.\n"
@@ -50,6 +53,26 @@ def build_prompt(data: dict) -> str:
             "Kullanıcı sadece tahmini soruyorsa bunları özetle. Ekstra bilgi sorarsa açıklama yap."
         )
 
+    if faults:
+        prompt_parts.append("\n⚠️ Anomali tespiti:")
+        for breaker, dates in faults.items():
+            formatted_dates = ', '.join(dates)
+            prompt_parts.append(f"- {breaker}: Şüpheli günler → {formatted_dates}")
+        prompt_parts.append(
+            "\nKullanıcı arıza hakkında soru sorarsa bu bilgileri detaylı paylaş. Sormazsa sadece özet geç.")
+
+    if leakage_result:
+        prompt_parts.append("\n⚡ Kaçak akım anomalisi tespiti:")
+        for breaker, dates in leakage_result.items():
+            formatted_dates = ', '.join(dates)
+            prompt_parts.append(f"- {breaker}: Şüpheli günler → {formatted_dates}")
+        prompt_parts.append(
+            "\nKullanıcı kaçak akım hakkında soru sorarsa bu bilgileri detaylı paylaş. Sormazsa sadece özet geç."
+        )
+
+    prompt_parts.append(f"\nKullanıcının Sorusu: {user_question}")
+    return "\n".join(prompt_parts)
+
     # Kullanıcı sorusu
     prompt_parts.append(f"\nKullanıcının Sorusu: {user_question}")
     return "\n".join(prompt_parts)
@@ -82,10 +105,18 @@ def invoke(data: dict):
             current = sum([row["current"] for row in measurements]) / len(measurements)
             active_power = sum([row["active_power"] for row in measurements]) / len(measurements)
             data["predict_result"] = predict_energy(voltage, current, active_power, n_days=30)
-            print("✅ JSON yüklendi ve predict_result hesaplandı:", data["predict_result"])
         except Exception as e:
             print(f"⚠️ Tahmin verisi yüklenemedi: {e}")
             data["predict_result"] = {}
+
+    if "faults" not in data:
+        try:
+            faults = fault_detection("C:\\Users\\sozcu\\Desktop\\sample.json")
+            data["faults"] = faults
+            print("✅ fault_detection çalıştı, sonuç:", faults)
+        except Exception as e:
+            print(f"⚠️ Arıza verisi yüklenemedi: {e}")
+            data["faults"] = {}
 
     final_prompt = build_prompt(data)
     print("📢 Final Prompt:\n", final_prompt)  # prompt içeriğini görmek için
