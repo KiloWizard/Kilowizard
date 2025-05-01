@@ -13,6 +13,10 @@ import plotly.express as px
 import fitz
 from llm.agent import invoke
 
+st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
+
+
+
 # ----- PDF READER -----
 def read_pdf_text(uploaded_file):
     text = ""
@@ -21,7 +25,6 @@ def read_pdf_text(uploaded_file):
             text += page.get_text()
     return text.strip()
 
-st.set_page_config(page_title="Enerji AI Asistanı", layout="wide")
 
 PRED_ENDPOINT = "http://localhost:8002/predict"
 
@@ -160,7 +163,7 @@ with tab_upload:
                     dev["file_obj"] = pdf_file
                     pdf_text = read_pdf_text(pdf_file)
                     dev["pdf_text"] = pdf_text
-                    
+
                 except Exception as e:
                     st.error(f"PDF okunurken hata oluştu: {e}")
 
@@ -247,12 +250,39 @@ with tab_chat:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    for m in st.session_state.messages:
-        st.chat_message(m["role"]).markdown(m["content"])
+    if "awaiting_response" not in st.session_state:
+        st.session_state.awaiting_response = False
 
-    if prompt := st.chat_input("Sorunuzu yazın…"):
-        st.chat_message("user").markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        answer = invoke({"input": prompt, "devices": st.session_state.devices})
-        st.chat_message("assistant").markdown(answer["output"])
-        st.session_state.messages.append({"role": "assistant", "content": answer["output"]})
+    # 🟦 Konuşma kutusuna tüm mesajları dök
+    chat_container = st.container()
+    with chat_container:
+        for msg in st.session_state.messages:
+            st.chat_message(msg["role"]).markdown(msg["content"])
+
+        st.markdown('<div id="scroll-to-end"></div>', unsafe_allow_html=True)
+
+    # 🟩 Giriş kutusu (sadece cevap beklenmiyorsa görünür)
+    if not st.session_state.awaiting_response:
+        prompt = st.chat_input("Sorunuzu yazın…")
+        if prompt:
+            st.chat_message("user").markdown(prompt)
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            st.session_state.awaiting_response = True
+            st.session_state.last_prompt = prompt
+            st.experimental_rerun()
+
+    # 🧠 Cevap bekleniyorsa, invoke et ve input gizliyken cevapla
+    elif st.session_state.awaiting_response and "last_prompt" in st.session_state:
+        prompt = st.session_state.last_prompt
+        response = invoke({"input": prompt, "devices": st.session_state.get("devices", [])})
+        st.chat_message("assistant").markdown(response["output"])
+        st.session_state.messages.append({"role": "assistant", "content": response["output"]})
+        st.session_state.awaiting_response = False
+        del st.session_state.last_prompt
+        st.experimental_rerun()
+
+   
+
+
+
+
